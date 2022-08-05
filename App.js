@@ -1,20 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, View } from "react-native";
+import tw from "tailwind-react-native-classnames";
+import { useState } from "react";
+import { GoalInput, GoalListItems } from "./components";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { addGoal, removeGoal } from "./redux/goalSlice";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import { StatusBar } from "expo-status-bar";
+
+function App() {
+    const [ModalVisibility, setModalVisibility] = useState(false);
+
+    const dispatch = useDispatch();
+
+    return (
+        <>
+            <StatusBar style="inverted" />
+            <View style={[tw`pt-10 px-3 flex-col h-full bg-gray-500`]}>
+                <View style={[tw`mb-4`]}>
+                    <Button
+                        title="Show Modal"
+                        onPress={() => setModalVisibility(true)}
+                    />
+                </View>
+                <GoalInput
+                    ModalVisibility={ModalVisibility}
+                    setModalVisibility={setModalVisibility}
+                />
+                <GoalListItems />
+            </View>
+        </>
+    );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function AppWrapper() {
+    return (
+        <Provider store={store}>
+            <App />
+        </Provider>
+    );
+}
